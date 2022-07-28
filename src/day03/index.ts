@@ -21,7 +21,7 @@ const array = readFile(path.join(__dirname + '/../../src/day03/input1.txt'));
 //console.log(array);
 
 // Part 1
-processPart1(array); // 2921 in decimal
+processPart1(array);
 
 
 // Part 2
