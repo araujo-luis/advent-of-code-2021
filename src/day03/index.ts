@@ -1,41 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-const array = readFile(path.join(__dirname + '/../../src/day03/input1.txt'));
-//console.log(array);
-
-// Part 1
-let gamma: string = '';
-let epsilon: string = '';
-let oneCounter: number = 0;
-let zeroCounter: number = 0;
-for (let i: number = 0; i < 12; i++) {
-    for (let j = 0; j < array.length; j++) {
-        const char: string = array[j].charAt(i);
-        if (char === '0') zeroCounter++
-        else oneCounter++;
-    }
-    if (oneCounter > zeroCounter) {
-        gamma += '1'; epsilon += '0'
-    }
-    else { gamma += '0'; epsilon += '1' }
-    oneCounter = 0;
-    zeroCounter = 0
-}
-console.log('gamma', gamma, 'decimal', parseInt(gamma, 2)); // 1174 in decimal
-console.log('epsilon', epsilon, 'decimal', parseInt(epsilon, 2)); // 2921 in decimal
-
-
-// Part 2
-
-const result1 = loopArray(array, 0);
-const result2 = loopArray2(array, 0)
-console.log('result', result1, parseInt(result1, 2));
-
-console.log('result2', result2, parseInt(result2, 2));
-console.log('answer', parseInt(result2, 2) * parseInt(result1, 2));
-
-
 function readFile(filePath: string) {
     try {
         console.log(filePath);
@@ -51,6 +16,55 @@ function readFile(filePath: string) {
         return null;
     }
 }
+
+const array = readFile(path.join(__dirname + '/../../src/day03/input1.txt'));
+//console.log(array);
+
+// Part 1
+processPart1(array); // 2921 in decimal
+
+
+// Part 2
+processPart2(array);
+
+function processPart1(array: string[]) {
+    let gamma: string = '';
+    let epsilon: string = '';
+    let oneCounter: number = 0;
+    let zeroCounter: number = 0;
+    for (let i: number = 0; i < 12; i++) {
+        for (let j = 0; j < array.length; j++) {
+            const char: string = array[j].charAt(i);
+            if (char === '0')
+                zeroCounter++;
+            else
+                oneCounter++;
+        }
+        if (oneCounter > zeroCounter) {
+            gamma += '1'; epsilon += '0';
+        }
+        else { gamma += '0'; epsilon += '1'; }
+        oneCounter = 0;
+        zeroCounter = 0;
+    }
+    console.log('PART 1');
+    console.log('gamma', gamma, 'decimal', parseInt(gamma, 2)); // 1174 in decimal
+    console.log('epsilon', epsilon, 'decimal', parseInt(epsilon, 2)); // 2921 in decimal
+    console.log('result', parseInt(epsilon, 2) * parseInt(gamma, 2));
+}
+
+
+
+function processPart2(array: string[]) {
+    const result1 = loopArray(array, 0);
+    const result2 = loopArray2(array, 0);
+    console.log('\n', 'PART 2');
+    console.log('result', result1, parseInt(result1, 2));
+
+    console.log('result2', result2, parseInt(result2, 2));
+    console.log('result', parseInt(result2, 2) * parseInt(result1, 2));
+}
+
 
 function loopArray(array: string[], i: number) {
     const zeroArray: string[] = [];
