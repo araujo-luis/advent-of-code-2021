@@ -78,7 +78,7 @@ function processPart1(array: number[][][], max: number) {
 
 }
 function processPart2(array: number[][][], max: number) {
-
+    console.log(max)
     const diagram: number[][] = [];
     //new Array(max + 1).fill(new Array(max + 1).fill(0)); for a reason this does not work
 
@@ -98,7 +98,7 @@ function processPart2(array: number[][][], max: number) {
     for (let i = 0; i < array.length; i++) {
         const [firstPoint, secondPoint] = array[i];
         if (firstPoint[X_AXIS] === secondPoint[X_AXIS]) {
-            let init, end = 0;
+            let init: number, end: number = 0;
             if (firstPoint[Y_AXIS] > secondPoint[Y_AXIS]) {
                 end = firstPoint[Y_AXIS];
                 init = secondPoint[Y_AXIS];
@@ -110,7 +110,7 @@ function processPart2(array: number[][][], max: number) {
                 if (++diagram[firstPoint[X_AXIS]][j] === 2) counter++
             }
         } else if (firstPoint[Y_AXIS] === secondPoint[Y_AXIS]) {
-            let init, end = 0;
+            let init: number, end: number = 0;
             if (firstPoint[X_AXIS] > secondPoint[X_AXIS]) {
                 end = firstPoint[X_AXIS];
                 init = secondPoint[X_AXIS];
@@ -120,6 +120,45 @@ function processPart2(array: number[][][], max: number) {
             }
             for (let j = init; j <= end; j++) {
                 if (++diagram[j][firstPoint[Y_AXIS]] === 2) counter++;
+            }
+        } else if (firstPoint[X_AXIS] + secondPoint[X_AXIS] === firstPoint[Y_AXIS] + secondPoint[Y_AXIS]) {
+            //A form
+            let initX: number, endX: number = 0;
+            if (firstPoint[X_AXIS] > secondPoint[X_AXIS]) {
+                endX = firstPoint[X_AXIS]
+                initX = secondPoint[X_AXIS]
+            } else {
+                initX = firstPoint[X_AXIS];
+                endX = secondPoint[X_AXIS];
+            }
+            let isPositive = true;
+            if (firstPoint[Y_AXIS] > secondPoint[Y_AXIS])
+                isPositive = false;
+
+
+            for (let j = initX; j <= endX; j++) {
+
+                if (++diagram[j][isPositive ? initX + j : endX - j] === 2) counter++;
+            }
+        } else if (Math.abs(firstPoint[X_AXIS] - secondPoint[X_AXIS]) === Math.abs(firstPoint[Y_AXIS] - secondPoint[Y_AXIS])) {
+            console.log({ firstPoint, secondPoint })
+            // V form
+            let initY: number, endY: number = 0;
+            let isPositive = true;
+            if (firstPoint[Y_AXIS] > secondPoint[Y_AXIS]) {
+                initY = secondPoint[Y_AXIS]
+                endY = firstPoint[Y_AXIS]
+                isPositive = false;
+            } else {
+                initY = firstPoint[Y_AXIS];
+                endY = secondPoint[Y_AXIS];
+            }
+
+            if (firstPoint[Y_AXIS] > secondPoint[Y_AXIS])
+                isPositive = false;
+
+            for (let j = initY; j <= endY; j++) {
+                if (++diagram[isPositive ? initY + initY - j : j - initY][j] === 2) counter++;
             }
         }
     }
