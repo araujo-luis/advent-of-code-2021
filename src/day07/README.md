@@ -1,4 +1,5 @@
---- Day 7: The Treachery of Whales ---
+# --- Day 7: The Treachery of Whales ---
+
 A giant whale has decided your submarine is its next meal, and it's much faster than you are. There's nowhere to run!
 
 Suddenly, a swarm of crabs (each in its own tiny submarine - it's too deep for them otherwise) zooms in to rescue you! They seem to be preparing to blast a hole in the ocean floor; sensors indicate a massive underground cave system just beyond where they're aiming!
@@ -36,7 +37,7 @@ Determine the horizontal position that the crabs can align to using the least fu
 
 Your puzzle answer was **344735**.
 
---- Part Two ---
+## --- Part Two ---
 The crabs don't seem interested in your proposed solution. Perhaps you misunderstand crab engineering?
 
 As it turns out, crab submarine engines don't burn fuel at a constant rate. Instead, each change of 1 step in horizontal position costs 1 more unit of fuel than the last: the first step costs 1, the second step costs 2, the third step costs 3, and so on.

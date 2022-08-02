@@ -26,19 +26,37 @@ function readFile(filePath: string) {
 const { array, max } = readFile(path.join(__dirname + '/../../src/day07/input1.txt'));
 
 
-let factorial = (n) => {
-    if (n === 0) return 0;
-    return n + factorial(n - 1);
-}
-const result = [];
-for (let i = 0; i < max; i++) {
-    let counter = 0;
-    for (let j = 0; j < array.length; j++) {
-        const diff = Math.abs(array[j] - i);
-        counter += factorial(diff);
+processPart1(array);
+processPart2(array);
+
+function processPart2(array) {
+    const factorial = (n: number) => {
+        return n * (n + 1) / 2;
+    };
+    const result: number[] = [];
+    for (let i = 0; i < max; i++) {
+        let counter = 0;
+        for (let j = 0; j < array.length; j++) {
+            const diff = Math.abs(array[j] - i);
+            counter += factorial(diff);
+        }
+        result.push(counter);
     }
-    result.push(counter);
+
+    console.log(Math.min(...result));
 }
 
-console.log(Math.min(...result));
+function processPart1(array) {
+    const result: number[] = [];
+    for (let i = 0; i < max; i++) {
+        let counter = 0;
+        for (let j = 0; j < array.length; j++) {
+            const diff = Math.abs(array[j] - i);
+            counter += diff;
+        }
+        result.push(counter);
+    }
+
+    console.log(Math.min(...result));
+}
 
