@@ -110,7 +110,7 @@ for (let i = 0; i < array.length; i++) {
                 sevenSegments[4] = new Set(counter[myKeys[0]] === 1 ? myKeys[0] : myKeys[1]); // e
             }
         } else if (first[j].length === 6) {
-            
+
             const notFoundD = dArray.find(a => !(first[j].indexOf(a) + 1));
             const notFoundC = cArray.find(a => !(first[j].indexOf(a) + 1));
             if (notFoundD) {
@@ -132,29 +132,22 @@ for (let i = 0; i < array.length; i++) {
         sevenSegmentsMap[element] = String.fromCharCode(97 + y)
     }
 
-    type DataNum = {
-        [key: number]: string
-    };
     type Data = {
-        [key: number]: DataNum
+        [key: number]: string
     }
 
     const numbers: Data = {
-        5: {
-            2: 'acdeg',
-            3: 'acdfg',
-            5: 'abdfg',
-        },
-        6: {
-            0: 'abcefg',
-            6: 'abdefg',
-            9: 'abcdfg'
-        }
+        2: 'acdeg',
+        3: 'acdfg',
+        5: 'abdfg',
+        0: 'abcefg',
+        6: 'abdefg',
+        9: 'abcdfg'
     }
 
 
     let result = '';
-    
+
     for (let k = 0; k < second.length; k++) {
         if (second[k].length === 2)
             result += '1'
@@ -165,11 +158,10 @@ for (let i = 0; i < array.length; i++) {
         else if (second[k].length === 7)
             result += '8'
         else {
-            
-            const converted = second[k].split('').map(x => sevenSegmentsMap[x]).join('');
-            for (const [key, value] of Object.entries(numbers[second[k].length.toString()])) {
-                if (value.toString().split('').every(a => (converted.indexOf(a) + 1))) {
 
+            const converted = second[k].split('').map(x => sevenSegmentsMap[x]).join('');
+            for (const [key, value] of Object.entries(numbers)) {
+                if (value.length === converted.length && value.toString().split('').every(a => (converted.indexOf(a) + 1))) {
                     result += key + ''
                     break;
                 }
