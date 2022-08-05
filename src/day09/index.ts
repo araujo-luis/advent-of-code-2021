@@ -30,7 +30,7 @@ const height = array.length;
 //console.table(array);
 console.log({ height, width });
 
-//let counter = processPart1(array);
+let counter = processPart1(array);
 
 function processPart1(array: number[][]) {
     let counter = 0;
@@ -69,7 +69,6 @@ function processPart2(array: number[][]) {
     const result = []
 
     let counter = 0;
-    let uniqueBasins = new Set<string>();
     const height: number = array.length
     const width: number = array[0].length;
     for (let y = 0; y < height; y++) {
@@ -79,64 +78,39 @@ function processPart2(array: number[][]) {
 
             if (value < up && value < down && value < left && value < right) {
                 const basinSet: Set<string> = new Set();
-                let sharedLocations = 0;
-                //console.log({ y, x });
-
                 const basinsResultSet = findLargestBasins(y, x, array, basinSet);
-                sharedLocations = findSharedLocations(uniqueBasins, basinsResultSet);
-                uniqueBasins = new Set([...uniqueBasins, ...basinsResultSet]);
-                //console.log({basinsResultSet});
-                
-                if (sharedLocations)
-                    console.log({ sharedLocations });
-
                 result.push(basinsResultSet.size);
                 counter = counter + value + 1;
             }
-
-
         }
 
     }
     result.sort((a, b) => b - a)
-    console.log({ result }, result.length);
-    //console.log('counter', counter);
-
     console.log('Part 2 Result: ', result[0] * result[1] * result[2]);
 
-    return result;
+    return result[0] * result[1] * result[2];
 }
 
 
 
 processPart2(array);
 
-function findSharedLocations(firstSet: Set<string>, second: Set<string>): number {
-    let result = 0;
-    firstSet.forEach(x => { if (second.has(x)) { result++ } })
-    return result;
-
-}
 
 function findLargestBasins(y: number, x: number, array: number[][], basinsResultSet: Set<string>): Set<string> {
     basinsResultSet.add(y + '-' + x)
     if (y > 0 && array[y - 1][x] != 9 && !basinsResultSet.has((y - 1) + '-' + x)) {
-        //console.log('up', { y: y - 1, x, value: array[y - 1][x] });
         basinsResultSet.add((y - 1) + '-' + x);
         findLargestBasins(y - 1, x, array, basinsResultSet);
     }
     if (y + 1 < height && array[y + 1][x] != 9 && !basinsResultSet.has((y + 1) + '-' + x)) {
-        //console.log('down', { y: y + 1, x, value: array[y + 1][x] });
         basinsResultSet.add((y + 1) + '-' + x);
         findLargestBasins(y + 1, x, array, basinsResultSet);
     }
     if (x + 1 < width && array[y][x + 1] != 9 && !basinsResultSet.has(y + '-' + (x + 1))) {
-        //console.log('right', { y: y, x: x + 1, value: array[y][x + 1] });
         basinsResultSet.add(y + '-' + (x + 1));
         findLargestBasins(y, x + 1, array, basinsResultSet);
     }
     if (x > 0 && array[y][x - 1] != 9 && !basinsResultSet.has(y + '-' + (x - 1))) {
-        //console.log('left', { y: y, x: x - 1, value: array[y][x - 1] });
         basinsResultSet.add(y + '-' + (x - 1));
         findLargestBasins(y, x - 1, array, basinsResultSet);
     }
