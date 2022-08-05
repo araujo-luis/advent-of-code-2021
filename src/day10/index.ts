@@ -19,11 +19,19 @@ class Stack {
     }
 
     print() {
-        console.table(this.stack);
+        console.log(this.stack);
     }
 
     isEmpty(): boolean {
         return !!this.stack.length;
+    }
+
+    size(): number {
+        return this.stack.length;
+    }
+
+    clear() {
+        this.stack.length = 0;
     }
 
 }
@@ -63,9 +71,15 @@ const scores = {
     '}': 1197,
     '>': 25137
 }
+
+const scoresPart2 = {
+    '(': 1,
+    '[': 2,
+    '{': 3,
+    '<': 4
+}
 // [({([[{{
 //{([(<[}>{[]{[(<()>
-let counter: number = 0;
 function isOpenCharacter(input: string): boolean {
     return !!characters[input]
 }
@@ -75,6 +89,7 @@ function isValidCloseCharacter(open: string, close: string): boolean {
 }
 
 function processPart1(array: string[][]): number {
+    let counter: number = 0;
 
     for (let i = 0; i < array.length; i++) {
         const line = array[i];
@@ -99,8 +114,37 @@ function processPart1(array: string[][]): number {
 
 processPart1(array)
 
+function processPart2(array: string[][]): number {
+    const values = [];
+    for (let i = 0; i < array.length; i++) {
+        let score = 0;
+        const line = array[i];
+        const myStack = new Stack();
+        for (let j = 0; j < line.length; j++) {
+            const character = line[j];
+            if (isOpenCharacter(character)) {
+                myStack.push(character);
+            } else if (isValidCloseCharacter(myStack.peek(), character)) {
+                myStack.pop();
+            } else {
+                myStack.clear();
+                break;
+            }
+        }
 
-//[({(<(())[]>[[{[]{<()<>>
+        const size = myStack.size();
+        for (let j = 0; j < size; j++) {
+            const character = myStack.pop();
+            score = (score * 5) + scoresPart2[character]
+        }
+        if (size) values.push(score);
 
+    }
+    values.sort((a, b)=> a - b );
 
+    console.log('Part 2 result: ', values[Math.floor(values.length / 2)]);
+    return 0;
+}
+
+processPart2(array)
 
