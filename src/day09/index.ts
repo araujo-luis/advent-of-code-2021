@@ -69,17 +69,28 @@ function processPart2(array: number[][]) {
     const result = []
 
     let counter = 0;
+    let uniqueBasins = new Set<string>();
     const height: number = array.length
     const width: number = array[0].length;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const value = array[y][x];
-            const { up, down, right, left } = getBasis(y, x, array);
+            const { up, down, right, left } = getBasins(y, x, array);
 
             if (value < up && value < down && value < left && value < right) {
                 const basinSet: Set<string> = new Set();
-                const basisResultSet = findLargestBasis(y, x, value, array, basinSet);
-                result.push(basisResultSet.size + 1);
+                let sharedLocations = 0;
+                //console.log({ y, x });
+
+                const basinsResultSet = findLargestBasins(y, x, array, basinSet);
+                sharedLocations = findSharedLocations(uniqueBasins, basinsResultSet);
+                uniqueBasins = new Set([...uniqueBasins, ...basinsResultSet]);
+                //console.log({basinsResultSet});
+                
+                if (sharedLocations)
+                    console.log({ sharedLocations });
+
+                result.push(basinsResultSet.size);
                 counter = counter + value + 1;
             }
 
@@ -89,7 +100,7 @@ function processPart2(array: number[][]) {
     }
     result.sort((a, b) => b - a)
     console.log({ result }, result.length);
-    console.log('counter', counter);
+    //console.log('counter', counter);
 
     console.log('Part 2 Result: ', result[0] * result[1] * result[2]);
 
@@ -100,36 +111,39 @@ function processPart2(array: number[][]) {
 
 processPart2(array);
 
+function findSharedLocations(firstSet: Set<string>, second: Set<string>): number {
+    let result = 0;
+    firstSet.forEach(x => { if (second.has(x)) { result++ } })
+    return result;
 
-
-function findLargestBasis(y: number, x: number, value: number, array: number[][], basisResultSet: Set<string>): Set<string> {
-    let up = width;
-    let down = width;
-    let right = width;
-    let left = width;
-    ({ up, down, right, left } = getBasis(y, x, array));
-
-    const nextValue = value + 1;
-    if (up === nextValue && nextValue != 9) {
-        basisResultSet.add((y - 1) + '-' + x);
-        findLargestBasis(y - 1, x, nextValue, array, basisResultSet);
-    }
-    if (down === nextValue && nextValue != 9) {
-        basisResultSet.add((y + 1) + '-' + x);
-        findLargestBasis(y + 1, x, nextValue, array, basisResultSet);
-    }
-    if (right === nextValue && nextValue != 9) {
-        basisResultSet.add(y + '-' + (x + 1));
-        findLargestBasis(y, x + 1, nextValue, array, basisResultSet);
-    }
-    if (left === nextValue && nextValue != 9) {
-        basisResultSet.add(y + '-' + (x - 1));
-        findLargestBasis(y, x - 1, nextValue, array, basisResultSet);
-    }
-    return basisResultSet;
 }
 
-function getBasis(y: number, x: number, array: number[][]) {
+function findLargestBasins(y: number, x: number, array: number[][], basinsResultSet: Set<string>): Set<string> {
+    basinsResultSet.add(y + '-' + x)
+    if (y > 0 && array[y - 1][x] != 9 && !basinsResultSet.has((y - 1) + '-' + x)) {
+        //console.log('up', { y: y - 1, x, value: array[y - 1][x] });
+        basinsResultSet.add((y - 1) + '-' + x);
+        findLargestBasins(y - 1, x, array, basinsResultSet);
+    }
+    if (y + 1 < height && array[y + 1][x] != 9 && !basinsResultSet.has((y + 1) + '-' + x)) {
+        //console.log('down', { y: y + 1, x, value: array[y + 1][x] });
+        basinsResultSet.add((y + 1) + '-' + x);
+        findLargestBasins(y + 1, x, array, basinsResultSet);
+    }
+    if (x + 1 < width && array[y][x + 1] != 9 && !basinsResultSet.has(y + '-' + (x + 1))) {
+        //console.log('right', { y: y, x: x + 1, value: array[y][x + 1] });
+        basinsResultSet.add(y + '-' + (x + 1));
+        findLargestBasins(y, x + 1, array, basinsResultSet);
+    }
+    if (x > 0 && array[y][x - 1] != 9 && !basinsResultSet.has(y + '-' + (x - 1))) {
+        //console.log('left', { y: y, x: x - 1, value: array[y][x - 1] });
+        basinsResultSet.add(y + '-' + (x - 1));
+        findLargestBasins(y, x - 1, array, basinsResultSet);
+    }
+    return basinsResultSet;
+}
+
+function getBasins(y: number, x: number, array: number[][]) {
     const width: number = array[0].length;
     let up = width;
     let down = width;
