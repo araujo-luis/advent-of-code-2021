@@ -23,33 +23,40 @@ function readFile(filePath: string) {
 
 const { array, width } = readFile(path.join(__dirname + '/../../src/day11/input1.txt'));
 const height = array.length;
-console.table(array);
+//console.table(array);
 
-console.log({ height, width })
+//console.log({ height, width })
 
-let notUpdate = new Set<string>();
-let flashes: number = 0;
 
-for (let runs = 0; runs < 100; runs++) {
-    notUpdate = new Set<string>();
-    for (let row = 0; row < width; row++) {
-        for (let col = 0; col < height; col++) {
-            if (array[row][col] === 9) {
-                array[row][col] = 0;
-                notUpdate.add(row + '-' + col);
-                flashes++;
-                // console.log('custom log', { row, col })
-                turnOnLights(row, col, array);
+function processPart1(array: number[][], runs: number = 1) {
+    let notUpdate = new Set<string>();
+    let flashes: number = 0;
+
+    for (let m = 0; m < runs; m++) {
+        notUpdate = new Set<string>();
+        for (let row = 0; row < width; row++) {
+            for (let col = 0; col < height; col++) {
+                if (array[row][col] === 9) {
+                    array[row][col] = 0;
+                    notUpdate.add(row + '-' + col);
+                    flashes++;
+                    // console.log('custom log', { row, col })
+                    ({ notUpdate, flashes } = turnOnLights(row, col, array, notUpdate, flashes));
+                }
+                else if (notUpdate.has(row + '-' + col))
+                    continue
+                else
+                    array[row][col]++;
             }
-            else if (notUpdate.has(row + '-' + col))
-                continue
-            else
-                array[row][col]++;
         }
     }
+
+    // console.table(array);
+    console.log('Part1 result', { flashes });
+
 }
 
-function turnOnLights(row: number, col: number, array: number[][]) {
+function turnOnLights(row: number, col: number, array: number[][], notUpdate: Set<string>, flashes: number) {
     // console.log('called');
 
     for (let i = row - 1; i <= row + 1; i++) {
@@ -62,13 +69,14 @@ function turnOnLights(row: number, col: number, array: number[][]) {
                 array[i][j] = 0;
                 notUpdate.add(i + '-' + j);
                 flashes++;
-                turnOnLights(i, j, array);
+                ({ notUpdate, flashes } = turnOnLights(i, j, array, notUpdate, flashes));
             } else
                 array[i][j]++;
 
         }
     }
+    return { notUpdate, flashes };
 }
 
-console.table(array);
-console.log({ flashes });
+
+processPart1(array, 100)
