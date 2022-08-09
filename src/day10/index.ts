@@ -3,7 +3,7 @@ import path from 'path';
 class Stack {
     stack: any[];
     constructor(elements: any[] = []) {
-        this.stack = elements || [];
+        this.stack = elements;
     }
 
     push(v: any) {

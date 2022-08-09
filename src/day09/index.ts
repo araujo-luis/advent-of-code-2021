@@ -1,10 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-interface Data {
-    first: string[],
-    second: string[]
-}
 function readFile(filePath: string) {
     try {
         console.log(filePath);
