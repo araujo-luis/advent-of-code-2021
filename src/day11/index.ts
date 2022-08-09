@@ -31,6 +31,7 @@ const height = array.length;
 function processPart1(array: number[][], runs: number = 1) {
     let notUpdate = new Set<string>();
     let flashes: number = 0;
+    let n
 
     for (let m = 0; m < runs; m++) {
         notUpdate = new Set<string>();
@@ -42,6 +43,11 @@ function processPart1(array: number[][], runs: number = 1) {
                     flashes++;
                     // console.log('custom log', { row, col })
                     ({ notUpdate, flashes } = turnOnLights(row, col, array, notUpdate, flashes));
+                    if (notUpdate.size === width * height) {
+                        console.log('Part 2 Result', { runNumber: m + 1 });
+                        break;
+                    }
+
                 }
                 else if (notUpdate.has(row + '-' + col))
                     continue
@@ -79,4 +85,4 @@ function turnOnLights(row: number, col: number, array: number[][], notUpdate: Se
 }
 
 
-processPart1(array, 100)
+processPart1(array, 300)
