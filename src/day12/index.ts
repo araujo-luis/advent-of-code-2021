@@ -26,7 +26,9 @@ function readFile(filePath: string) {
 
 const { map, uniqueElemets } = readFile(path.join(__dirname + '/../../src/day12/input1.txt'));
 console.log(map, uniqueElemets);
-
+function isLowerCase(str) {
+    return str == str.toLowerCase() && str != str.toUpperCase();
+}
 class Stack {
     stack: any[];
     constructor(elements: any[] = []) {
@@ -66,11 +68,13 @@ class Stack {
 class Graph {
     #nodes: Map<string, string[]>;
     #routes: Map<string, boolean>;
+    #customRoutes: string[];
 
 
     constructor() {
         this.#nodes = new Map<string, string[]>();
         this.#routes = new Map();
+        this.#customRoutes = [];
     }
     addNode(name: string) {
         this.#nodes.set(name, []);
@@ -89,47 +93,67 @@ class Graph {
         console.log(this.#nodes);
     }
 
-
-    /* 
-    
-    Map(7) {
-        'dc' => [ 'end', 'start', 'HN', 'LN', 'kj' ],
-        'end' => [ 'dc', 'HN' ],
-        'HN' => [ 'dc', 'start', 'end', 'kj' ],
-        'start' => [ 'dc', 'HN', 'kj' ],
-        'kj' => [ 'start', 'sa', 'HN', 'dc' ],
-        'LN' => [ 'dc' ],
-        'sa' => [ 'kj' ]
-      } */
-    findRoutes(source: string, destination: string, visitedNodes = new Set()) {
-        if (source.toLowerCase() === source)
+    findRoutes(source: string, destination: string, visitedNodes = new Set<string>(), pendingQueue: string[] = [], cRoute: string = '') {
+        //console.log('node', source);
+        /* if(this.#customRoutes.length)
+            visitedNodes = new Set(this.#customRoutes);
+        else  */
+        if (isLowerCase(source))
             visitedNodes.add(source);
-        
+
         const nodes = this.#nodes.get(source);
 
-        if (nodes.includes(destination) && !visitedNodes.has(destination)) {
-            visitedNodes.add(destination);
-            
-            this.#routes.set(Array.from(visitedNodes).join(','), true);
-            console.log('route', Array.from(this.#routes.keys()));
-            visitedNodes.delete(destination)
-        }
+        /*  if (nodes.includes(destination) && !visitedNodes.has(destination)) {
+             visitedNodes.add(destination);
+             
+             this.#routes.set(Array.from(visitedNodes).join(','), true);
+             console.log('route', Array.from(this.#routes.keys()));
+             visitedNodes.delete(destination)
+         } */
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
-            if (visitedNodes.has(node) || node === 'end') {
-                continue
-            };
-            visitedNodes.delete('end')
-            console.log('visited', source, node, Array.from(visitedNodes));
-            //console.log('visited', node, this.#nodes.get(node));
-            
-            this.findRoutes(node, destination, visitedNodes);
+            if (destination === node) {
+                //console.log('found -----:', cRoute + "," + source + "," + node);
+                this.#routes.set(cRoute + "," + source + "," + node, true);
+
+            } else {
+                if (this.#nodes.get(node).length && !visitedNodes.has(node)) {
+                    //console.log('addting to queue', node);
+
+                    pendingQueue.push(node);
+                    const finalRoute = cRoute ? cRoute + "," + source : source;
+                    this.#customRoutes.push(finalRoute);
+                }
+            }
+
+            /* console.log('node', node);
+            if (!visitedNodes.has(node)) {
+                console.log('not Visited');
+                this.findRoutes(node, destination, visitedNodes);
+            }; */
         }
+        //console.log({ custom: this.#customRoutes, pendingQueue, visitedNodes });
+        const nextNode = pendingQueue.shift();
+        cRoute = this.#customRoutes.shift();
+        if (nextNode) {
+            const a: string[] = cRoute === '' ? [] : cRoute.split(',');
+            a.push(nextNode);
+            visitedNodes = new Set(a.filter(x=> isLowerCase(x)))
+            this.findRoutes(nextNode, destination, visitedNodes, pendingQueue, cRoute);
+        }
+
+
 
 
     }
     printRoutes() {
         console.log('ROUTES', this.#routes);
+    }
+    printResultPart1() {
+        console.log('ROUTES', this.#routes.size);
+    }
+    delete(value: string) {
+        this.#nodes.delete(value);
     }
 }
 
@@ -146,7 +170,9 @@ for (const [key, children] of map) {
     }
 }
 
-graph.print();
+graph.delete('end');
+//graph.print();
 graph.findRoutes('start', 'end');
-graph.printRoutes();
+graph.printResultPart1();
+//graph.printRoutes();
 
