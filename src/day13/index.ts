@@ -38,7 +38,7 @@ function readFile(filePath: string) {
 }
 
 const { array, maxX, maxY, folds } = readFile(path.join(__dirname + '/../../src/day13/input1.txt'));
-console.log({ array, maxX, maxY, folds })
+console.log({ maxX, maxY, folds })
 
 function formMatrix(array: number[][], maxX: number, maxY: number): string[][] {
     const matrix: string[][] = []
@@ -60,15 +60,16 @@ function formMatrix(array: number[][], maxX: number, maxY: number): string[][] {
 }
 
 function foldY(array: string[][], foldY: number) {
-    for (let y = array.length - foldY + 1; y < array.length; y++) {
+    for (let y = array.length - foldY - 1; y < array.length; y++) {
         for (let x = 0; x < array[y].length; x++) {
             const element = array[y][x];
             if (element === '#') {
-                const diff = (y - foldY) * 2;
+                const diff = ((y - foldY) * 2) || 1;
                 array[y - diff][x] = '#'
             }
         }
     }
+
     return array.splice(0, foldY);
 }
 function foldX(array: string[][], foldX: number) {
@@ -77,7 +78,7 @@ function foldX(array: string[][], foldX: number) {
         for (let x = array[0].length - foldX - 1; x < array[0].length; x++) {
             const element = array[y][x];
             if (element === '#') {
-                const diff = (x - foldX) * 2;
+                const diff = ((x - foldX) * 2) || 1;
                 array[y][x - diff] = '#'
             }
         }
@@ -101,6 +102,7 @@ function count(array: string[][]) {
 }
 
 let matrix = formMatrix(array, maxX, maxY);
+//console.table(matrix);
 for (let i = 0; i < folds.length; i++) {
     const [position, value] = folds[i];
     if (position === 'y') {
@@ -109,7 +111,7 @@ for (let i = 0; i < folds.length; i++) {
         matrix = foldX(matrix, Number(value))
     }
 }
-//console.table(matrix);
+console.table(matrix);
 console.log(count(matrix));
 /* const folded = foldY(matrix, 7);
 
