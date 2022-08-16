@@ -102,7 +102,6 @@ function count(array: string[][]) {
 }
 
 let matrix = formMatrix(array, maxX, maxY);
-//console.table(matrix);
 for (let i = 0; i < folds.length; i++) {
     const [position, value] = folds[i];
     if (position === 'y') {
@@ -113,9 +112,3 @@ for (let i = 0; i < folds.length; i++) {
 }
 console.table(matrix);
 console.log(count(matrix));
-/* const folded = foldY(matrix, 7);
-
-console.table(folded);
-const folded2 = foldX(folded, 5);
-console.table(folded2);
- */
