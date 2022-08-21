@@ -47,7 +47,7 @@ for (let i = 0; i < string.length; i++) {
 function processBothParts(stringPairs: Map<string, number>, runs: number, counterCharacterMap: Map<string, number>, counter: number = 0) {
     counter++;
 
-    const newMap = new Map();
+    const newStringPair = new Map();
 
     for (let pair of stringPairs.keys()) {
         const value = map.get(pair);
@@ -59,12 +59,12 @@ function processBothParts(stringPairs: Map<string, number>, runs: number, counte
         const firstNewPair = pair[0] + value;
         const secondNewPair = value + pair[1];
 
-        newMap.set(firstNewPair, ((newMap.get(firstNewPair) || 0) + 1) + ocurrences - 1);
-        newMap.set(secondNewPair, ((newMap.get(secondNewPair) || 0) + 1) + ocurrences - 1);
+        newStringPair.set(firstNewPair, ((newStringPair.get(firstNewPair) || 0) + 1) + ocurrences - 1);
+        newStringPair.set(secondNewPair, ((newStringPair.get(secondNewPair) || 0) + 1) + ocurrences - 1);
     }
 
     if (counter < runs) {
-        processBothParts(newMap, runs, counterCharacterMap, counter)
+        processBothParts(newStringPair, runs, counterCharacterMap, counter)
     }
 
     return counterCharacterMap;
