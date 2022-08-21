@@ -29,23 +29,21 @@ function readFile(filePath: string) {
 
 const { map, string } = readFile(path.join(__dirname + '/../../src/day14/input1.txt'));
 //console.log({ map, string })
-const counterCharatetsMapPart1 = new Map<string, number>();
+const counterCharatets = new Map<string, number>();
 string.split('').forEach((x) => {
-    counterCharatetsMapPart1.set(x, (counterCharatetsMapPart1.get(x) || 0) + 1)
+    counterCharatets.set(x, (counterCharatets.get(x) || 0) + 1)
 });
-const counterCharatetsMapPart2 = new Map(counterCharatetsMapPart1);
 
 
-const counterPairsPart1 = new Map<string, number>();
+const counterPairs = new Map<string, number>();
 
 for (let i = 0; i < string.length; i++) {
     if (i + 2 > string.length)
         break
     const pair = string.substring(i, i + 2);
-    counterPairsPart1.set(pair, (counterPairsPart1.get(pair) || 0) + 1)
+    counterPairs.set(pair, (counterPairs.get(pair) || 0) + 1)
 }
 
-const counterPairsPart2 = new Map(counterPairsPart1);
 function processBothParts(stringPairs: Map<string, number>, runs: number, counterCharacterMap: Map<string, number>, counter: number = 0) {
     counter++;
 
@@ -69,18 +67,18 @@ function processBothParts(stringPairs: Map<string, number>, runs: number, counte
         processBothParts(newMap, runs, counterCharacterMap, counter)
     }
 
-    return newMap;
+    return counterCharacterMap;
 }
 
 
-processBothParts(counterPairsPart1, 10, counterCharatetsMapPart1);
-processBothParts(counterPairsPart2, 40, counterCharatetsMapPart2);
+const resultPart1 = processBothParts(new Map(counterPairs), 10, new Map(counterCharatets));
+const resultPart2 = processBothParts(new Map(counterPairs), 40, new Map(counterCharatets));
 
 
-const maxPart1 = Math.max(...counterCharatetsMapPart1.values());
-const minPart1 = Math.min(...counterCharatetsMapPart1.values())
+const maxPart1 = Math.max(...resultPart1.values());
+const minPart1 = Math.min(...resultPart1.values())
 
-const maxPart2 = Math.max(...counterCharatetsMapPart2.values());
-const minPart2 = Math.min(...counterCharatetsMapPart2.values())
+const maxPart2 = Math.max(...resultPart2.values());
+const minPart2 = Math.min(...resultPart2.values())
 console.log('Result Part 1', { maxPart1, minPart1, result: maxPart1 - minPart1 });
 console.log('Result Part 2', { maxPart2, minPart2, result: maxPart2 - minPart2 });
