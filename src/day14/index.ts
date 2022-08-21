@@ -1,4 +1,3 @@
-import { count, countReset } from 'console';
 import fs from 'fs';
 import path from 'path';
 
@@ -29,11 +28,21 @@ function readFile(filePath: string) {
 }
 
 const { map, string } = readFile(path.join(__dirname + '/../../src/day14/input1.txt'));
-console.log({ map, string })
+//console.log({ map, string })
 const counterMap = new Map<string, number>();
+
+
+const counterPairs = new Map<string, number>();
 string.split('').forEach((x) => {
     counterMap.set(x, (counterMap.get(x) || 0) + 1)
 });
+for (let i = 0; i < string.length; i++) {
+    if (i + 2 > string.length)
+        break
+    const pair = string.substring(i, i + 2);
+    counterPairs.set(pair, (counterPairs.get(pair) || 0) + 1)
+}
+
 
 function processPart1(string: string, runs: number, counter: number = 0) {
     counter++;
@@ -54,7 +63,7 @@ function processPart1(string: string, runs: number, counter: number = 0) {
             finalString += stringAsArray[j] + stringAsArray[j + 1];
     }
     finalString = stringAsArray[0] + finalString;
-    //console.log({ finalString })
+    console.log({ finalString })
     if (counter < runs)
         processPart1(finalString, runs, counter)
 
@@ -63,7 +72,39 @@ function processPart1(string: string, runs: number, counter: number = 0) {
 }
 
 
-console.log(processPart1(string, 10));
+function processPart2(stringPairs: Map<string, number>, runs: number, counter: number = 0) {
+    counter++;
+
+    const newMap = new Map();
+    //console.log({ newMap, stringPairs });
+
+    for (let pair of stringPairs.keys()) {
+        const value = map.get(pair);
+        if (!value)
+            continue
+
+        counterMap.set(value, ((counterMap.get(value) || 0) + 1)
+            + stringPairs.get(pair) - 1);
+        const firstNewPair = pair[0] + value;
+        const secondNewPair = value + pair[1];
+
+        newMap.set(firstNewPair, ((newMap.get(firstNewPair) || 0) + 1) + stringPairs.get(pair) - 1);
+        newMap.set(secondNewPair, ((newMap.get(secondNewPair) || 0) + 1) + stringPairs.get(pair) - 1);
+    }
+
+    if (counter < runs) {
+        console.log({ counter });
+
+        processPart2(newMap, runs, counter)
+    }
+
+    return newMap;
+}
+
+console.log({ counterPairs })
+console.log('resutl', processPart2(counterPairs, 40));
+
+
 const max = Math.max(...counterMap.values());
 const min = Math.min(...counterMap.values())
 console.log(counterMap, { max, min, result: max - min });
